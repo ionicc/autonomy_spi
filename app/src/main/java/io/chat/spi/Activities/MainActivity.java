@@ -12,9 +12,23 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TimeZone;
 
 import io.chat.spi.R;
+import io.chat.spi.Storage.LocalStorage;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -22,7 +36,14 @@ public class MainActivity extends AppCompatActivity {
    private EditText username;
    private EditText password;
    private Boolean wifiStatus;
+
+   private String usernameString;
+   private String passwordString;
+
    WifiInfo wifiInfo;
+
+   private LocalStorage localStorage;
+   private String LOGIN_URL = "http://139.59.72.106/login.php";
 
    private String ssid = "null";
 
@@ -30,6 +51,8 @@ public class MainActivity extends AppCompatActivity {
    protected void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
       setContentView(R.layout.activity_main);
+
+      localStorage = new LocalStorage(this);
 
       //Initialising WifiManager
 
@@ -61,11 +84,25 @@ public class MainActivity extends AppCompatActivity {
                Toast.makeText(getApplicationContext(), "Connect to Casino", Toast.LENGTH_SHORT).show();
             } else {
                if (ssid.contains("The Master Server")) {
-                  Toast.makeText(getApplicationContext(), "Hello", Toast.LENGTH_SHORT).show();
-                  Intent intent = new Intent(MainActivity.this, HomeActivity.class);
-                  startActivity(intent);
-               } else {
-                  Toast.makeText(getApplicationContext(), ssid, Toast.LENGTH_SHORT).show();
+                  Date currentTime = Calendar.getInstance().getTime();
+                  String currentTimeString = currentTime.toString();
+
+                  usernameString = username.getText().toString();
+                  passwordString = password.getText().toString();
+
+                  if (usernameString.isEmpty() && passwordString.isEmpty()) {
+
+                     Toast.makeText(getApplicationContext(), "Please enter your credentials", Toast.LENGTH_SHORT).show();
+                  } else if (usernameString.isEmpty()) {
+
+                     Toast.makeText(getApplicationContext(), "Please enter your username", Toast.LENGTH_SHORT).show();
+                  } else if (passwordString.isEmpty()) {
+
+                     Toast.makeText(getApplicationContext(), "Please enter your password", Toast.LENGTH_SHORT).show();
+                  } else {
+                     arrangeData(usernameString, passwordString);
+                  }
+
                }
             }
          }
@@ -96,9 +133,86 @@ public class MainActivity extends AppCompatActivity {
 
    }
 
+   public String getDateCurrentTimeZone(long timestamp) {
+      try {
+         Calendar calendar = Calendar.getInstance();
+         TimeZone tz = TimeZone.getDefault();
+         calendar.setTimeInMillis(timestamp * 1000);
+         calendar.add(Calendar.MILLISECOND, tz.getOffset(calendar.getTimeInMillis()));
+         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+         Date currenTimeZone = (Date) calendar.getTime();
+         return sdf.format(currenTimeZone);
+      } catch (Exception e) {
+      }
+      return "";
+   }
+
    public boolean isConnected() throws InterruptedException, IOException {
       String command = "ping -c 1 google.com";
       return (Runtime.getRuntime().exec(command).waitFor() == 0);
+   }
+
+   public void arrangeData(final String usernameString, final String passwordString) {
+
+
+      final StringRequest stringRequest = new StringRequest(Request.Method.POST, LOGIN_URL,
+              new Response.Listener<String>() {
+                 @Override
+                 public void onResponse(String response) {
+
+                    if (response.contains("Logged")) {
+                       Toast.makeText(MainActivity.this, "You have Succesfully logged in", Toast.LENGTH_SHORT).show();
+
+                       Intent i = new Intent(MainActivity.this, HomeActivity.class);
+                       //storage.saveEmail(email);
+                       //storage.setLogin();
+                       localStorage.saveUsername(usernameString);
+                       startActivity(i);
+                       finish();
+                    }
+
+                    if (response.contains("Please enter your password")) {
+
+                       Toast.makeText(getApplicationContext(), response, Toast.LENGTH_SHORT).show();
+
+                    }
+
+                    if (response.contains("Please enter your username")) {
+
+                       Toast.makeText(getApplicationContext(), response, Toast.LENGTH_SHORT).show();
+
+                    }
+
+                    if (response.contains("Your Username or Password is invalid")) {
+
+                       Toast.makeText(getApplicationContext(), response, Toast.LENGTH_SHORT).show();
+                    }
+                 }
+              },
+              new Response.ErrorListener() {
+                 @Override
+                 public void onErrorResponse(VolleyError error) {
+
+                    Toast.makeText(MainActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
+
+                 }
+              }) {
+
+         protected Map<String, String> getParams() {
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("username", usernameString);
+            params.put("password", passwordString);
+            return params;
+
+         }
+
+
+      };
+
+      RequestQueue reuqestQue = Volley.newRequestQueue(this);
+      reuqestQue.add(stringRequest);
+
+
    }
 
 

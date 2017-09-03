@@ -3,6 +3,7 @@ package io.chat.spi.Storage;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.provider.ContactsContract;
 
 /**
  * Created by Sagar Vakkala on 01-09-2017.
@@ -18,6 +19,10 @@ public class LocalStorage {
 
    int PRIVATE_MODE = 0;
 
+   public static final String USERNAME = "username";
+
+   public static final String INTIME = "inTime";
+
    public static final String PREF_NAME = "SpiPref";
 
    public LocalStorage(Context context) {
@@ -25,6 +30,18 @@ public class LocalStorage {
       this.context = context;
       pref = context.getSharedPreferences(PREF_NAME, PRIVATE_MODE);
       editor = pref.edit();
+   }
+
+   public void saveUsername(String username) {
+      editor.putString(USERNAME,username);
+      editor.commit();
+
+   }
+
+   public void saveInTime(String inTime) {
+      editor.putString(INTIME,inTime);
+      editor.commit();
+
    }
 
 }
