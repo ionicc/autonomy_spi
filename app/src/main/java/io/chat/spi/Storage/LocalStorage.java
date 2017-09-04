@@ -25,6 +25,8 @@ public class LocalStorage {
 
    public static final String PREF_NAME = "SpiPref";
 
+   public static final String LOGIN = "login";
+
    public LocalStorage(Context context) {
 
       this.context = context;
@@ -42,6 +44,16 @@ public class LocalStorage {
       editor.putString(INTIME,inTime);
       editor.commit();
 
+   }
+
+   public void loggedIn() {
+      editor.putBoolean(LOGIN,true);
+      editor.commit();
+   }
+
+   public void loggedOut() {
+      editor.putBoolean(LOGIN,false);
+      editor.commit();
    }
 
 }

@@ -3,7 +3,8 @@
           package="io.chat.spi">
 
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
-    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.INTERNET"/>
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -11,7 +12,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activities.MainActivity"
+        <activity
+            android:name=".Activities.MainActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -19,8 +21,12 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".Activities.HomeActivity"
+        <activity
+            android:name=".Activities.HomeActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+        </activity>
+        <activity android:name=".Activities.RequestsActivity"
+                  android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         </activity>
     </application>
 
