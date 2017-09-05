@@ -137,8 +137,8 @@ public class RequestsActivity extends AppCompatActivity implements View.OnClickL
 
       };
 
-      RequestQueue reuqestQue = Volley.newRequestQueue(this);
-      reuqestQue.add(stringRequest);
+      RequestQueue requestQue = Volley.newRequestQueue(this);
+      requestQue.add(stringRequest);
 
 
    }

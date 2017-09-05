@@ -7,22 +7,48 @@
     android:layout_height="match_parent"
     tools:context="io.chat.spi.Activities.HomeActivity">
 
+<android.support.v7.widget.Toolbar
+    android:id="@+id/my_toolbar"
+    android:layout_width="match_parent"
+    android:layout_height="?attr/actionBarSize"
+    android:background="?attr/colorPrimary"
+    android:elevation="4dp"
+    android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+    app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:weightSum="1"
         android:orientation="vertical"
-        android:id="@+id/HomeLinear1">
+        android:id="@+id/HomeLinear1"
+        android:layout_below="@+id/my_toolbar"
+        android:layout_alignParentStart="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Hello"
             android:textSize="30dp"
+            android:layout_weight="0.7"
             android:layout_gravity="center"
             android:id="@+id/NameHome"
             android:gravity="center"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textSize="30dp"
+                android:layout_weight="0.3"
+                android:id="@+id/home_name"/>
+
+            </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -30,15 +56,18 @@
             android:orientation="horizontal">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="In-Time"
+                android:text="In-Time:"
                 android:textSize="30dp"
-                android:layout_weight="0.1"/>
+                android:layout_weight="0.7"/>
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="0.7"
+                android:layout_weight="0.3"
+                android:textSize="20dp"
+                android:layout_gravity="center"
+                android:gravity="center"
                 android:id="@+id/IntimeHome"/>
 
         </LinearLayout>

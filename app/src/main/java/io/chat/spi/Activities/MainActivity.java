@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
 
    private String ssid = "null";
 
+
    @Override
    protected void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
@@ -61,6 +62,11 @@ public class MainActivity extends AppCompatActivity {
       if (wifiInfo.getSupplicantState() == SupplicantState.COMPLETED) {
          ssid = wifiInfo.getSSID();
 
+      }
+
+      if(localStorage.getLoginState()) {
+         Intent intent = new Intent(getApplicationContext(),HomeActivity.class);
+         startActivity(intent);
       }
 
       //Initialising UI objects --Sagar
@@ -160,7 +166,7 @@ public class MainActivity extends AppCompatActivity {
                  @Override
                  public void onResponse(String response) {
 
-                    if (response.contains("Logged")) {
+                 /*   if (response.contains("Logged")) {
                        Toast.makeText(MainActivity.this, "You have Succesfully logged in", Toast.LENGTH_SHORT).show();
 
                        Intent i = new Intent(MainActivity.this, HomeActivity.class);
@@ -170,6 +176,7 @@ public class MainActivity extends AppCompatActivity {
                        startActivity(i);
                        finish();
                     }
+                    */
 
                     if (response.contains("Please enter your password")) {
 
@@ -177,15 +184,27 @@ public class MainActivity extends AppCompatActivity {
 
                     }
 
-                    if (response.contains("Please enter your username")) {
+                    else if (response.contains("Please enter your username")) {
 
                        Toast.makeText(getApplicationContext(), response, Toast.LENGTH_SHORT).show();
 
                     }
 
-                    if (response.contains("Your Username or Password is invalid")) {
+                    else if (response.contains("Your Username or Password is invalid")) {
 
                        Toast.makeText(getApplicationContext(), response, Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+                       String id = response.toString();
+                       localStorage.setLoginId(id);
+                       localStorage.loggedIn();
+                       localStorage.saveUsername(usernameString);
+                       Toast.makeText(getApplicationContext(),id,Toast.LENGTH_SHORT).show();
+                       finish();
+                       Intent intent = new Intent(getApplicationContext(),HomeActivity.class);
+                       startActivity(intent);
+
+
                     }
                  }
               },
