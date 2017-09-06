@@ -11,8 +11,6 @@
     android:id="@+id/my_toolbar"
     android:layout_width="match_parent"
     android:layout_height="?attr/actionBarSize"
-    android:background="?attr/colorPrimary"
-    android:elevation="4dp"
     android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
     app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
 
@@ -33,18 +31,20 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Hello"
+            android:text="Hello,"
             android:textSize="30dp"
             android:layout_weight="0.7"
             android:layout_gravity="center"
             android:id="@+id/NameHome"
+            android:textColor="#BDBDBD"
             android:gravity="center"/>
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text=""
+                android:gravity="center"
                 android:textSize="30dp"
+                android:textColor="#BDBDBD"
                 android:layout_weight="0.3"
                 android:id="@+id/home_name"/>
 
@@ -59,6 +59,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="In-Time:"
+                android:gravity="center"
+                android:textColor="#BDBDBD"
                 android:textSize="30dp"
                 android:layout_weight="0.7"/>
             <TextView
@@ -66,6 +68,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="0.3"
                 android:textSize="20dp"
+                android:textColor="#BDBDBD"
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:id="@+id/IntimeHome"/>
@@ -101,6 +104,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
+                    android:textColor="#fff"
+                    android:elevation="10dp"
+                    android:background="@color/colorPrimary"
                     android:gravity="center"
                     android:text="Roster"/>
 
@@ -116,7 +122,10 @@
                     android:id="@+id/tv"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:background="@color/colorPrimary"
+                    android:textColor="#fff"
                     android:gravity="center"
+                    android:elevation="10dp"
                     android:text="Training Videos"/>
             </LinearLayout>
 
@@ -140,6 +149,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
+                    android:textColor="#fff"
+                    android:background="@color/colorPrimary"
                     android:gravity="center"
                     android:text="Peroformance record"/>
 
@@ -155,6 +166,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center"
+                    android:textColor="#fff"
+                    android:background="@color/colorPrimary"
                     android:text="Requests"
                     android:layout_margin="20dp"/>
             </LinearLayout>

@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -37,6 +38,12 @@ public class RequestsActivity extends AppCompatActivity implements View.OnClickL
 
    private LocalStorage localStorage;
 
+   private TextView nameTextView;
+
+   private String username;
+
+   private String name;
+
    @Override
    protected void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
@@ -47,8 +54,17 @@ public class RequestsActivity extends AppCompatActivity implements View.OnClickL
       explain_change = (EditText) findViewById(R.id.requests_EditText_explain);
       reason_change = (EditText) findViewById(R.id.requests_EditText_reason);
       localStorage = new LocalStorage(this);
+      nameTextView = (TextView) findViewById(R.id.requests_name);
 
       submitButton.setOnClickListener(this);
+
+      HashMap<String, String> getUsername = localStorage.getUsername();
+      username = getUsername.get(LocalStorage.USERNAME);
+
+      HashMap<String, String> getName = localStorage.getName();
+      name = getName.get(LocalStorage.NAME);
+
+      nameTextView.setText(name);
    }
 
    public void rbClick (View view) {
@@ -127,6 +143,7 @@ public class RequestsActivity extends AppCompatActivity implements View.OnClickL
 
          protected Map<String, String> getParams() {
             Map<String, String> params = new HashMap<String, String>();
+            params.put("username",username);
             params.put("reasonType", requestType);
             params.put("reasonChange", reasonChange);
             params.put("explainChange", explainChange);

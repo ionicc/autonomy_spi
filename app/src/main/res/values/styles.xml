@@ -17,4 +17,12 @@
         <item name="android:textColor">#93989E</item>
     </style>
 
+    <style name="MyToolbarStyle">
+        <item name="android:maxHeight">@dimen/abc_action_bar_default_height_material</item>
+        <item name="android:background">@color/colorPrimary</item>
+        <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
+        <!-- No need for colorPrimary, colorPrimaryDark, colorAccent here
+             this should go to the AppTheme -->
+    </style>
+
 </resources>
