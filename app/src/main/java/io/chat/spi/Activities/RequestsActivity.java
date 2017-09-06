@@ -24,7 +24,7 @@ import java.util.Map;
 import io.chat.spi.R;
 import io.chat.spi.Storage.LocalStorage;
 
-public class RequestsActivity extends AppCompatActivity implements View.OnClickListener{
+public class RequestsActivity extends AppCompatActivity implements View.OnClickListener {
 
    private Button submitButton;
 
@@ -45,6 +45,10 @@ public class RequestsActivity extends AppCompatActivity implements View.OnClickL
    private String name;
 
    private String rbString;
+
+   String explainString;
+
+   String reasonString;
 
    @Override
    protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +73,7 @@ public class RequestsActivity extends AppCompatActivity implements View.OnClickL
       nameTextView.setText(name);
    }
 
-   public void rbClick (View view) {
+   public void rbClick(View view) {
 
       int radioButtonId = rg.getCheckedRadioButtonId();
       rb = (RadioButton) findViewById(radioButtonId);
@@ -79,37 +83,32 @@ public class RequestsActivity extends AppCompatActivity implements View.OnClickL
 
    @Override
    public void onClick(View view) {
-      if(view == submitButton) {
-
-         rbString = rb.getTag().toString();
-         String explainString = explain_change.toString();
-         String reasonString = reason_change.toString();
-
-         if(explainString.isEmpty() && reasonString.isEmpty() && rbString.isEmpty()) {
-            Toast.makeText(getApplicationContext(),"Please enter the details",Toast.LENGTH_SHORT).show();
+      if (view == submitButton) {
+         try {
+            rbString = rb.getTag().toString();
+         } catch (NullPointerException e) {
+            Toast.makeText(this,"Please select the type of request",Toast.LENGTH_SHORT).show();
          }
+         explainString = explain_change.getText().toString();
+         reasonString = reason_change.getText().toString();
 
-         else if(explainString.isEmpty() && reasonString.isEmpty()) {
-            Toast.makeText(getApplicationContext(),"Please fill the fields",Toast.LENGTH_SHORT).show();
-         }
-
-         else if(explainString.isEmpty()) {
-            Toast.makeText(getApplicationContext(),"Please fill in all the fields",Toast.LENGTH_SHORT).show();
-         }
-
-         else if(reasonString.isEmpty()) {
-            Toast.makeText(getApplicationContext(),"Please fill in all the fields",Toast.LENGTH_SHORT).show();
-         }
-         else if(rbString.isEmpty()) {
-            Toast.makeText(getApplicationContext(),"Please fill in all the fields",Toast.LENGTH_SHORT).show();
-         }
-         else {
+         if (explainString == null && reasonString == null && rbString == null) {
+            Toast.makeText(getApplicationContext(), "Please enter the details", Toast.LENGTH_SHORT).show();
+         } else if (explainString == null && reasonString == null) {
+            Toast.makeText(getApplicationContext(), "Please fill the fields", Toast.LENGTH_SHORT).show();
+         } else if (explainString == null) {
+            Toast.makeText(getApplicationContext(), "Please fill in all the fields", Toast.LENGTH_SHORT).show();
+         } else if (reasonString == null) {
+            Toast.makeText(getApplicationContext(), "Please fill in all the fields", Toast.LENGTH_SHORT).show();
+         } else if (rbString == null) {
+            Toast.makeText(getApplicationContext(), "Please fill in all the fields", Toast.LENGTH_SHORT).show();
+         } else {
             sendData(rbString, reasonString, explainString);
          }
       }
    }
 
-   public void sendData(final String requestType , final String reasonChange, final String explainChange) {
+   public void sendData(final String requestType, final String reasonChange, final String explainChange) {
 
 
       final StringRequest stringRequest = new StringRequest(Request.Method.POST, REQ_URL,
@@ -129,7 +128,7 @@ public class RequestsActivity extends AppCompatActivity implements View.OnClickL
 
                     if (response.contains("fail")) {
 
-                       Toast.makeText(getApplicationContext(),"Failed", Toast.LENGTH_SHORT).show();
+                       Toast.makeText(getApplicationContext(), "Failed", Toast.LENGTH_SHORT).show();
 
                     }
                  }
@@ -145,10 +144,10 @@ public class RequestsActivity extends AppCompatActivity implements View.OnClickL
 
          protected Map<String, String> getParams() {
             Map<String, String> params = new HashMap<String, String>();
-            params.put("username",username);
+            params.put("username", username);
             params.put("type", requestType);
-            params.put("reason", reasonChange);
-            params.put("description", explainChange);
+            params.put("reason", reasonString);
+            params.put("description", explainString);
             return params;
 
          }
