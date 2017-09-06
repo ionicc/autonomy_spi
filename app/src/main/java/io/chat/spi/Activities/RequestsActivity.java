@@ -34,7 +34,7 @@ public class RequestsActivity extends AppCompatActivity implements View.OnClickL
 
    private RadioGroup rg;
 
-   private String REQ_URL = "";
+   private String REQ_URL = "http://139.59.72.106/request.php";
 
    private LocalStorage localStorage;
 
@@ -43,6 +43,8 @@ public class RequestsActivity extends AppCompatActivity implements View.OnClickL
    private String username;
 
    private String name;
+
+   private String rbString;
 
    @Override
    protected void onCreate(Bundle savedInstanceState) {
@@ -72,14 +74,14 @@ public class RequestsActivity extends AppCompatActivity implements View.OnClickL
       int radioButtonId = rg.getCheckedRadioButtonId();
       rb = (RadioButton) findViewById(radioButtonId);
 
-      //Got the RadioButton text -> Need to use it somewhere now --Sagar
+
    }
 
    @Override
    public void onClick(View view) {
       if(view == submitButton) {
 
-         String rbString = rb.getTag().toString();
+         rbString = rb.getTag().toString();
          String explainString = explain_change.toString();
          String reasonString = reason_change.toString();
 
@@ -115,8 +117,8 @@ public class RequestsActivity extends AppCompatActivity implements View.OnClickL
                  @Override
                  public void onResponse(String response) {
 
-                    if (response.contains("Successful")) {
-                       Toast.makeText(getApplicationContext(), "Request has been successfully submitted", Toast.LENGTH_SHORT).show();
+                    if (response.contains("Entry done")) {
+                       Toast.makeText(getApplicationContext(), "Entry done", Toast.LENGTH_SHORT).show();
 
                        Intent i = new Intent(getApplicationContext(), HomeActivity.class);
                        //storage.saveEmail(email);
@@ -127,7 +129,7 @@ public class RequestsActivity extends AppCompatActivity implements View.OnClickL
 
                     if (response.contains("fail")) {
 
-                       Toast.makeText(getApplicationContext(),"Error submitting", Toast.LENGTH_SHORT).show();
+                       Toast.makeText(getApplicationContext(),"Failed", Toast.LENGTH_SHORT).show();
 
                     }
                  }
@@ -144,9 +146,9 @@ public class RequestsActivity extends AppCompatActivity implements View.OnClickL
          protected Map<String, String> getParams() {
             Map<String, String> params = new HashMap<String, String>();
             params.put("username",username);
-            params.put("reasonType", requestType);
-            params.put("reasonChange", reasonChange);
-            params.put("explainChange", explainChange);
+            params.put("type", requestType);
+            params.put("reason", reasonChange);
+            params.put("description", explainChange);
             return params;
 
          }

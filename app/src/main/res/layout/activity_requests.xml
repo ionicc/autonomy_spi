@@ -100,6 +100,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Shift Change"
+            android:tag="Shift Change"
             android:textSize="20dp"
             android:paddingStart="16dp"
             android:onClick="rbClick"
@@ -110,6 +111,7 @@
                 android:layout_height="wrap_content"
                 android:text="Leave request"
                 android:textSize="20dp"
+                android:tag="Leave request"
                 android:paddingStart="16dp"
                 android:onClick="rbClick"
                 android:layout_weight="0.2"/>
@@ -118,6 +120,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Week Off change"
+                android:tag="Week Off Change"
                 android:textSize="20dp"
                 android:onClick="rbClick"
                 android:paddingStart="16dp"

@@ -195,7 +195,7 @@ public class MainActivity extends AppCompatActivity {
                        Toast.makeText(getApplicationContext(), response, Toast.LENGTH_SHORT).show();
                     }
                     else {
-                       String id = response.toString();
+                       String id = response;
                        localStorage.setLoginId(id);
                        localStorage.loggedIn();
                        localStorage.saveUsername(usernameString);
