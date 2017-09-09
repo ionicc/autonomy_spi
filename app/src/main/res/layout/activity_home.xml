@@ -152,7 +152,7 @@
                     android:textColor="#fff"
                     android:background="@color/colorPrimary"
                     android:gravity="center"
-                    android:text="Peroformance record"/>
+                    android:text="Attendance"/>
 
             </LinearLayout>
 

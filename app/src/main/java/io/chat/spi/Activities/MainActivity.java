@@ -7,6 +7,7 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -46,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
    private String LOGIN_URL = "http://139.59.72.106/login.php";
 
    private String ssid = "null";
-
+   private String bssid = "null";
 
    @Override
    protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
       wifiInfo = wifiManager.getConnectionInfo();
       if (wifiInfo.getSupplicantState() == SupplicantState.COMPLETED) {
          ssid = wifiInfo.getSSID();
-
+         bssid = wifiInfo.getBSSID();
       }
 
       if(localStorage.getLoginState()) {
@@ -84,29 +85,38 @@ public class MainActivity extends AppCompatActivity {
             wifiInfo = wifiManager.getConnectionInfo();
             if (wifiInfo.getSupplicantState() == SupplicantState.COMPLETED) {
                ssid = wifiInfo.getSSID();
+               bssid = wifiInfo.getBSSID();
 
+               Log.d("The BSSID", wifiInfo.getBSSID());
             }
-            if (ssid.contains("null")) {
+            if (bssid.contains("null")) {
                Toast.makeText(getApplicationContext(), "Connect to Casino", Toast.LENGTH_SHORT).show();
             } else {
-               if (ssid.contains("The Master Server")) {
+               if (ssid.contains("Guest")) {
                   Date currentTime = Calendar.getInstance().getTime();
                   String currentTimeString = currentTime.toString();
 
                   usernameString = username.getText().toString();
                   passwordString = password.getText().toString();
 
-                  if (usernameString.isEmpty() && passwordString.isEmpty()) {
+                  if(bssid.contains("56:d9:e7:f8:b0:2d")) {
 
-                     Toast.makeText(getApplicationContext(), "Please enter your credentials", Toast.LENGTH_SHORT).show();
-                  } else if (usernameString.isEmpty()) {
+                     if (usernameString.isEmpty() && passwordString.isEmpty()) {
 
-                     Toast.makeText(getApplicationContext(), "Please enter your username", Toast.LENGTH_SHORT).show();
-                  } else if (passwordString.isEmpty()) {
+                        Toast.makeText(getApplicationContext(), "Please enter your credentials", Toast.LENGTH_SHORT).show();
+                     } else if (usernameString.isEmpty()) {
 
-                     Toast.makeText(getApplicationContext(), "Please enter your password", Toast.LENGTH_SHORT).show();
-                  } else {
-                     arrangeData(usernameString, passwordString);
+                        Toast.makeText(getApplicationContext(), "Please enter your username", Toast.LENGTH_SHORT).show();
+                     } else if (passwordString.isEmpty()) {
+
+                        Toast.makeText(getApplicationContext(), "Please enter your password", Toast.LENGTH_SHORT).show();
+                     } else {
+                        arrangeData(usernameString, passwordString);
+                     }
+
+                  }
+                  else {
+                     Toast.makeText(getApplicationContext(),"Nice try",Toast.LENGTH_SHORT).show();
                   }
 
                }
@@ -135,8 +145,6 @@ public class MainActivity extends AppCompatActivity {
             }
 
 */
-
-
    }
 
    public String getDateCurrentTimeZone(long timestamp) {

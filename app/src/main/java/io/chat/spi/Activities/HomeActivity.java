@@ -1,7 +1,13 @@
 package io.chat.spi.Activities;
 
 import android.app.DownloadManager;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Environment;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -25,6 +31,7 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.jar.Manifest;
 
 import io.chat.spi.R;
 import io.chat.spi.Storage.LocalStorage;
@@ -43,6 +50,10 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
    private TextView homeName;
    private TextView homeInTime;
+
+   private DownloadManager downloadManager;
+
+   private static final int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 56;
 
    private static final String LOGOUT_URL = "http://139.59.72.106/logout.php";
    private static final String RETURN_DETAILS_URL = "http://139.59.72.106/return_name.php";
@@ -98,6 +109,11 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
       if (view == reqButton) {
          Intent intent = new Intent(HomeActivity.this, RequestsActivity.class);
          startActivity(intent);
+      }
+
+      if(view == rosterButton) {
+
+         checkPermissions();
       }
    }
 
@@ -213,5 +229,54 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
          RequestQueue requestQueue = Volley.newRequestQueue(this);
          requestQueue.add(stringRequest);
       }
+   }
+
+   public void checkPermissions() {
+
+      if (ContextCompat.checkSelfPermission(getApplicationContext(),
+              android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+              != PackageManager.PERMISSION_GRANTED) {
+
+         // Should we show an explanation?
+
+
+            //Didn't add any explanation right now --Sagar Vakkala
+
+            ActivityCompat.requestPermissions(HomeActivity.this,
+                    new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    MY_PERMISSIONS_REQUEST_READ_CONTACTS);
+
+            //Requesting permissions for reading contacts
+
+            if (ContextCompat.checkSelfPermission(getApplicationContext(),
+                    android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    == PackageManager.PERMISSION_GRANTED) {
+               Toast.makeText(this,"Downloading",Toast.LENGTH_SHORT).show();
+               downloadRoster();
+
+            }
+
+            else {
+               Toast.makeText(getApplicationContext(),"Please grant access",Toast.LENGTH_SHORT).show();
+            }
+
+
+
+      }
+      else {
+         downloadRoster();
+      }
+   }
+
+   public void downloadRoster() {
+
+
+      downloadManager= (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
+      Uri uri=Uri.parse("http://139.59.72.106/download.pdf");
+      DownloadManager.Request request=new DownloadManager.Request(uri);
+      request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "Roster");
+      request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+      downloadManager.enqueue(request);
+
    }
 }
