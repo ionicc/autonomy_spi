@@ -47,6 +47,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
    private String username;
    private String name;
    private String inTime;
+   private String loginToken;
 
    private TextView homeName;
    private TextView homeInTime;
@@ -93,6 +94,9 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
       HashMap<String, String> getInTime = localStorage.getInTime();
       inTime = getInTime.get(LocalStorage.INTIME);
 
+      HashMap<String,String> getLoginToken = localStorage.getLoginToken();
+      loginToken = getLoginToken.get(LocalStorage.TOKEN);
+
       if (name == null && inTime == null) {
 
          getDetails();
@@ -111,10 +115,10 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
          startActivity(intent);
       }
 
-      if(view == rosterButton) {
+      if(view == rosterButton) {checkPermissions();}
 
-         checkPermissions();
-      }
+      if(view == tvButton) {goToYoutubeChannel();}
+
    }
 
    @Override
@@ -172,6 +176,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             Map<String, String> params = new HashMap<String, String>();
             params.put("id", id);
             params.put("username", username);
+            params.put("token",loginToken);
             return params;
 
          }
@@ -278,5 +283,11 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
       request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
       downloadManager.enqueue(request);
 
+   }
+
+   private void goToYoutubeChannel() {
+      Intent intent = new Intent(Intent.ACTION_VIEW);
+      intent.setData(Uri.parse("https://www.youtube.com/user/PewDiePie"));
+      startActivity(intent);
    }
 }

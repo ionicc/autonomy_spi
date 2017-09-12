@@ -65,8 +65,8 @@ public class MainActivity extends AppCompatActivity {
          bssid = wifiInfo.getBSSID();
       }
 
-      if(localStorage.getLoginState()) {
-         Intent intent = new Intent(getApplicationContext(),HomeActivity.class);
+      if (localStorage.getLoginState()) {
+         Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
          startActivity(intent);
       }
 
@@ -92,14 +92,14 @@ public class MainActivity extends AppCompatActivity {
             if (bssid.contains("null")) {
                Toast.makeText(getApplicationContext(), "Connect to Casino", Toast.LENGTH_SHORT).show();
             } else {
-               if (ssid.contains("Guest")) {
+               if (ssid.contains("The Master Server")) {
                   Date currentTime = Calendar.getInstance().getTime();
                   String currentTimeString = currentTime.toString();
 
                   usernameString = username.getText().toString();
                   passwordString = password.getText().toString();
 
-                  if(bssid.contains("56:d9:e7:f8:b0:2d")) {
+                  if (bssid.contains("98:de:d0:fd:a9:ea")) {
 
                      if (usernameString.isEmpty() && passwordString.isEmpty()) {
 
@@ -114,9 +114,26 @@ public class MainActivity extends AppCompatActivity {
                         arrangeData(usernameString, passwordString);
                      }
 
+                  } else {
+                     Toast.makeText(getApplicationContext(), "Nice try", Toast.LENGTH_SHORT).show();
                   }
-                  else {
-                     Toast.makeText(getApplicationContext(),"Nice try",Toast.LENGTH_SHORT).show();
+
+               } else {
+
+                  usernameString = username.getText().toString();
+                  passwordString = password.getText().toString();
+
+                  if (usernameString.isEmpty() && passwordString.isEmpty()) {
+
+                     Toast.makeText(getApplicationContext(), "Please enter your credentials", Toast.LENGTH_SHORT).show();
+                  } else if (usernameString.isEmpty()) {
+
+                     Toast.makeText(getApplicationContext(), "Please enter your username", Toast.LENGTH_SHORT).show();
+                  } else if (passwordString.isEmpty()) {
+
+                     Toast.makeText(getApplicationContext(), "Please enter your password", Toast.LENGTH_SHORT).show();
+                  } else {
+                     arrangeData2(usernameString, passwordString);
                   }
 
                }
@@ -190,26 +207,22 @@ public class MainActivity extends AppCompatActivity {
 
                        Toast.makeText(getApplicationContext(), response, Toast.LENGTH_SHORT).show();
 
-                    }
-
-                    else if (response.contains("Please enter your username")) {
+                    } else if (response.contains("Please enter your username")) {
 
                        Toast.makeText(getApplicationContext(), response, Toast.LENGTH_SHORT).show();
 
-                    }
-
-                    else if (response.contains("Your Username or Password is invalid")) {
+                    } else if (response.contains("Your Username or Password is invalid")) {
 
                        Toast.makeText(getApplicationContext(), response, Toast.LENGTH_SHORT).show();
-                    }
-                    else {
+                    } else {
                        String id = response;
                        localStorage.setLoginId(id);
                        localStorage.loggedIn();
                        localStorage.saveUsername(usernameString);
-                       Toast.makeText(getApplicationContext(),id,Toast.LENGTH_SHORT).show();
+                       localStorage.saveLoginMethod("1");
+                       Toast.makeText(getApplicationContext(), id, Toast.LENGTH_SHORT).show();
                        finish();
-                       Intent intent = new Intent(getApplicationContext(),HomeActivity.class);
+                       Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
                        startActivity(intent);
 
 
@@ -229,6 +242,69 @@ public class MainActivity extends AppCompatActivity {
             Map<String, String> params = new HashMap<String, String>();
             params.put("username", usernameString);
             params.put("password", passwordString);
+            params.put("token", "1");
+            return params;
+
+         }
+
+
+      };
+
+      RequestQueue reuqestQue = Volley.newRequestQueue(this);
+      reuqestQue.add(stringRequest);
+
+
+   }
+
+   public void arrangeData2(final String usernameString, final String passwordString) {
+
+
+      final StringRequest stringRequest = new StringRequest(Request.Method.POST, LOGIN_URL,
+              new Response.Listener<String>() {
+                 @Override
+                 public void onResponse(String response) {
+
+
+                    if (response.contains("Please enter your password")) {
+
+                       Toast.makeText(getApplicationContext(), response, Toast.LENGTH_SHORT).show();
+
+                    } else if (response.contains("Please enter your username")) {
+
+                       Toast.makeText(getApplicationContext(), response, Toast.LENGTH_SHORT).show();
+
+                    } else if (response.contains("Your Username or Password is invalid")) {
+
+                       Toast.makeText(getApplicationContext(), response, Toast.LENGTH_SHORT).show();
+                    } else {
+                       String id = response;
+                       localStorage.setLoginId(id);
+                       localStorage.loggedIn();
+                       localStorage.saveUsername(usernameString);
+                       localStorage.saveLoginMethod("0");
+                       Toast.makeText(getApplicationContext(), id, Toast.LENGTH_SHORT).show();
+                       finish();
+                       Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
+                       startActivity(intent);
+
+
+                    }
+                 }
+              },
+              new Response.ErrorListener() {
+                 @Override
+                 public void onErrorResponse(VolleyError error) {
+
+                    Toast.makeText(MainActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
+
+                 }
+              }) {
+
+         protected Map<String, String> getParams() {
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("username", usernameString);
+            params.put("password", passwordString);
+            params.put("token", "0");
             return params;
 
          }

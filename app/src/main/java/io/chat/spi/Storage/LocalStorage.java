@@ -33,6 +33,8 @@ public class LocalStorage {
 
    public static final String NAME = "name";
 
+   public static final String TOKEN = "token";
+
    public LocalStorage(Context context) {
 
       this.context = context;
@@ -74,6 +76,12 @@ public class LocalStorage {
       editor.commit();
    }
 
+   public void saveLoginMethod(String token) {
+
+      editor.putString(TOKEN,token);
+      editor.commit();
+   }
+
    public void logoutSession() {
       editor.remove(USERNAME);
       editor.remove(NAME);
@@ -104,6 +112,13 @@ public class LocalStorage {
       HashMap<String,String> hashInTime = new HashMap<>();
       hashInTime.put(INTIME,pref.getString(INTIME,null));
       return hashInTime;
+   }
+
+   public HashMap<String,String> getLoginToken() {
+      HashMap<String ,String > hashToken = new HashMap<>();
+      hashToken.put(TOKEN,pref.getString(TOKEN,null));
+
+      return hashToken;
    }
 
 }
