@@ -41,7 +41,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
    private Button rosterButton;
    private Button tvButton;
    private Button reqButton;
-   private Button prButton;
+   private Button attendanceButton;
    private LocalStorage localStorage;
    private String id;
    private String username;
@@ -67,7 +67,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
       rosterButton = (Button) findViewById(R.id.roster);
       tvButton = (Button) findViewById(R.id.tv);
       reqButton = (Button) findViewById(R.id.requests);
-      prButton = (Button) findViewById(R.id.performance_record);
+      attendanceButton = (Button) findViewById(R.id.attendance);
 
       homeName = (TextView) findViewById(R.id.home_name);
       homeInTime = (TextView) findViewById(R.id.IntimeHome);
@@ -80,7 +80,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
       rosterButton.setOnClickListener(this);
       tvButton.setOnClickListener(this);
       reqButton.setOnClickListener(this);
-      prButton.setOnClickListener(this);
+      attendanceButton.setOnClickListener(this);
 
       HashMap<String, String> getId = localStorage.getId();
       id = getId.get(LocalStorage.ID);
@@ -118,6 +118,11 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
       if(view == rosterButton) {checkPermissions();}
 
       if(view == tvButton) {goToYoutubeChannel();}
+
+      if(view == attendanceButton) {
+         Intent intent = new Intent(getApplicationContext(),AttendanceActivity.class);
+         startActivity(intent);
+      }
 
    }
 
