@@ -7,6 +7,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="0.3"
+        android:textColor="#000"
         android:gravity="center"
         android:id="@+id/list_date"/>
     <TextView
@@ -14,12 +15,14 @@
         android:layout_height="wrap_content"
         android:layout_weight="0.3"
         android:gravity="center"
+        android:textColor="#000"
         android:id="@+id/list_loginTime"/>
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="0.3"
         android:gravity="center"
+        android:textColor="#000"
         android:id="@+id/list_logoutTime"/>
 
 </LinearLayout>

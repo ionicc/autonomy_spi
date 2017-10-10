@@ -2,19 +2,24 @@ package io.chat.spi.Activities;
 
 import android.app.DownloadManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,8 +54,17 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
    private String inTime;
    private String loginToken;
 
+   private RadioButton rb;
+
+   private RadioGroup rg;
+
+   AlertDialog.Builder builder;
+   LayoutInflater inflater;
+   View dialogView;
    private TextView homeName;
    private TextView homeInTime;
+
+   private String rbString = null;
 
    private DownloadManager downloadManager;
 
@@ -69,11 +83,13 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
       reqButton = (Button) findViewById(R.id.requests);
       attendanceButton = (Button) findViewById(R.id.attendance);
 
+
       homeName = (TextView) findViewById(R.id.home_name);
       homeInTime = (TextView) findViewById(R.id.IntimeHome);
 
       Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
       setSupportActionBar(myToolbar);
+
 
       localStorage = new LocalStorage(this);
 
@@ -94,7 +110,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
       HashMap<String, String> getInTime = localStorage.getInTime();
       inTime = getInTime.get(LocalStorage.INTIME);
 
-      HashMap<String,String> getLoginToken = localStorage.getLoginToken();
+      HashMap<String, String> getLoginToken = localStorage.getLoginToken();
       loginToken = getLoginToken.get(LocalStorage.TOKEN);
 
       if (name == null && inTime == null) {
@@ -115,12 +131,16 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
          startActivity(intent);
       }
 
-      if(view == rosterButton) {checkPermissions();}
+      if (view == rosterButton) {
+         checkPermissions();
+      }
 
-      if(view == tvButton) {goToYoutubeChannel();}
+      if (view == tvButton) {
+         goToYoutubeChannel();
+      }
 
-      if(view == attendanceButton) {
-         Intent intent = new Intent(getApplicationContext(),AttendanceActivity.class);
+      if (view == attendanceButton) {
+         Intent intent = new Intent(getApplicationContext(), AttendanceActivity.class);
          startActivity(intent);
       }
 
@@ -151,7 +171,49 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
       return super.onOptionsItemSelected(item);
    }
 
+
+   public void rbClick2(View view) {
+
+      int radioButtonId = rg.getCheckedRadioButtonId();
+      rb = (RadioButton) dialogView.findViewById(radioButtonId);
+
+   }
+
    private void logout() {
+
+
+
+       builder = new AlertDialog.Builder(this);
+       inflater = this.getLayoutInflater();
+       dialogView = inflater.inflate(R.layout.alert, null);
+
+
+      builder.setView(dialogView);
+
+      rg = (RadioGroup) dialogView.findViewById(R.id.alert_rg);
+
+
+      builder.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
+         public void onClick(DialogInterface dialog, int id) {
+            rbString = rb.getTag().toString();
+            logoutPostCall();
+         }
+      });
+
+      builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+         @Override
+         public void onClick(DialogInterface dialogInterface, int i) {
+            dialogInterface.dismiss();
+
+         }
+      });
+
+      builder.show();
+
+
+   }
+
+   /*private void logout() {
 
       StringRequest stringRequest = new StringRequest(Request.Method.POST, LOGOUT_URL, new Response.Listener<String>() {
          @Override
@@ -189,6 +251,47 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
       RequestQueue requestQueue = Volley.newRequestQueue(this);
       requestQueue.add(stringRequest);
    }
+   */
+
+   private void logoutPostCall() {
+
+      StringRequest stringRequest = new StringRequest(Request.Method.POST, LOGOUT_URL, new Response.Listener<String>() {
+         @Override
+         public void onResponse(String response) {
+            if (response.contains("Logged Out")) {
+               Toast.makeText(getApplicationContext(), "You have been successfully logged out", Toast.LENGTH_SHORT).show();
+               Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+               startActivity(intent);
+               localStorage.logoutSession();
+               localStorage.logOut();
+               finish();
+            }
+
+            if (response.contains("Failed")) {
+               Toast.makeText(getApplicationContext(), "Failed to log out", Toast.LENGTH_SHORT).show();
+            }
+
+         }
+      }, new Response.ErrorListener() {
+         @Override
+         public void onErrorResponse(VolleyError error) {
+            Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
+         }
+      }) {
+
+         protected Map<String, String> getParams() {
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("id", id);
+            params.put("username", username);
+            params.put("token", loginToken);
+            params.put("reason", rbString);
+            return params;
+
+         }
+      };
+      RequestQueue requestQueue = Volley.newRequestQueue(this);
+      requestQueue.add(stringRequest);
+   }
 
    private void getDetails() {
 
@@ -213,7 +316,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                      homeInTime.setText(inTime);
 
 
-
                   } catch (JSONException e) {
                      e.printStackTrace();
                   }
@@ -230,8 +332,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             protected Map<String, String> getParams() {
 
                Map<String, String> params = new HashMap<>();
-               params.put("id",id);
-               params.put("username",username);
+               params.put("id", id);
+               params.put("username", username);
                return params;
 
             }
@@ -250,30 +352,26 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
          // Should we show an explanation?
 
 
-            //Didn't add any explanation right now --Sagar Vakkala
+         //Didn't add any explanation right now --Sagar Vakkala
 
-            ActivityCompat.requestPermissions(HomeActivity.this,
-                    new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                    MY_PERMISSIONS_REQUEST_READ_CONTACTS);
+         ActivityCompat.requestPermissions(HomeActivity.this,
+                 new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                 MY_PERMISSIONS_REQUEST_READ_CONTACTS);
 
-            //Requesting permissions for reading contacts
+         //Requesting permissions for reading contacts
 
-            if (ContextCompat.checkSelfPermission(getApplicationContext(),
-                    android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                    == PackageManager.PERMISSION_GRANTED) {
-               Toast.makeText(this,"Downloading",Toast.LENGTH_SHORT).show();
-               downloadRoster();
+         if (ContextCompat.checkSelfPermission(getApplicationContext(),
+                 android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                 == PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(this, "Downloading", Toast.LENGTH_SHORT).show();
+            downloadRoster();
 
-            }
-
-            else {
-               Toast.makeText(getApplicationContext(),"Please grant access",Toast.LENGTH_SHORT).show();
-            }
+         } else {
+            Toast.makeText(getApplicationContext(), "Please grant access", Toast.LENGTH_SHORT).show();
+         }
 
 
-
-      }
-      else {
+      } else {
          downloadRoster();
       }
    }
@@ -281,9 +379,9 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
    public void downloadRoster() {
 
 
-      downloadManager= (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
-      Uri uri=Uri.parse("http://139.59.72.106/download.pdf");
-      DownloadManager.Request request=new DownloadManager.Request(uri);
+      downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
+      Uri uri = Uri.parse("http://139.59.72.106/download.pdf");
+      DownloadManager.Request request = new DownloadManager.Request(uri);
       request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "Roster");
       request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
       downloadManager.enqueue(request);
